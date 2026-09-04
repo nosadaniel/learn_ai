@@ -1,0 +1,13 @@
+[project]
+name = "learn-mcp"
+version = "0.1.0"
+description = "A chatbot that can search for research papers by using connected mcp server"
+readme = "README.md"
+requires-python = ">=3.12"
+dependencies = [
+  "anthropic>=1.3.0",
+  "arxiv>=4.0.1",
+  "mcp>=1.2,<2",
+  "nest-asyncio>=1.6.0",
+  "python-dotenv>=1.2.3",
+]
