@@ -6,14 +6,19 @@
                 "-y",
                 "@modelcontextprotocol/server-filesystem",
                 "."
-            ]
+            ],
+            "env": {
+                "NPM_CONFIG_LOGLEVEL": "silent"
+            },
+            "transport": "stdio"
         },
         "research": {
             "command": "uv",
             "args": [
                 "run",
                 "research_server.py"
-            ]
+            ],
+            "transport": "stdio"
         },
         "fetch": {
             "command": "uvx",
@@ -21,7 +26,8 @@
                 "--with",
                 "mcp<2",
                 "mcp-server-fetch"
-            ]
+            ],
+            "transport": "stdio"
         }
     }
 }
