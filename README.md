@@ -43,6 +43,9 @@ uv sync
 # Configure your API key
 cp .env.example .env
 
+# Lunch the MCP inspector
+npx @modelcontextprotocol/inspector uv run research_server.py
+
 # Run the MCP research chatbot
 uv run mcp_chatbot.py
 ```
