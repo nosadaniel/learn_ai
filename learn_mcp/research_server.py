@@ -10,7 +10,7 @@ from mcp.server.fastmcp import FastMCP
 PAPER_DIR = "papers"
 
 # Initialize FastMCP server
-mcp = FastMCP("research")
+mcp = FastMCP("research", port=8080)
 
 
 class PaperInfo(BaseModel):
@@ -237,5 +237,5 @@ def generate_fetch_summary_store_file_prompt(url: str) -> str:
     - The text content inside the file must contain ONLY your drafted markdown summary—no conversational intros, outros, or explanations.
     """
 if __name__ == "__main__":
-    mcp.run(transport='stdio')
+    mcp.run(transport='streamable-http')
 
