@@ -1,14 +1,19 @@
 
+from collections.abc import Sequence
 from dotenv import load_dotenv
 from langchain_mcp_adapters.client import MultiServerMCPClient
 from langchain.agents import create_agent
-from langchain_core.messages import AIMessage
+from langchain_core.messages import AIMessage, AnyMessage
 from mcp.types import PromptArgument
 from pydantic import BaseModel
 import asyncio
 import json
 
 from llm_provider import get_model_id
+
+from langgraph.graph.state import CompiledStateGraph
+from typing import Any
+
 
 load_dotenv()
 
@@ -31,13 +36,13 @@ class AvailableResource(BaseModel):
 class MCP_ChatBot:
 
     def __init__(self):
-        self.mcp_client = None
-        self.agent = None
-        self.server_names = []
+        self.mcp_client: MultiServerMCPClient | None = None
+        self.agent: CompiledStateGraph | None = None
+        self.server_names: list[str] = []
         self.available_prompts: dict[str, AvailablePrompt] = {}
         self.available_resources: dict[str, AvailableResource] = {}
 
-    async def connect_to_servers(self):
+    async def connect_to_servers(self)->None:
         """Connect to all MCP servers defined in the configuration and build the agent."""
         try:
             with open('server_config.json', 'r') as f:
@@ -91,19 +96,21 @@ class MCP_ChatBot:
             except Exception:
                 continue
 
-    async def _run_agent(self, messages):
+    async def _run_agent(self, messages: Sequence[dict[str, Any] | AnyMessage])->None:
+        if self.agent is None:
+            raise RuntimeError("Agent is not initialized. Please call the connect_to_servers() method first")
         result = await self.agent.ainvoke({"messages": messages})
         for msg in result["messages"]:
             if isinstance(msg, AIMessage):
                 for call in msg.tool_calls:
-                    print(f"Calling tool {call['name']} with args {call['args']}")
+                    print(f"Calling tool: {call['name']} with args: {call['args']}")
                 if msg.content:
                     print(msg.content)
 
-    async def process_query(self, query):
+    async def process_query(self, query: str)->None:
         await self._run_agent([{"role": "user", "content": query}])
 
-    async def list_prompts(self):
+    async def list_prompts(self)->None:
         """Print all prompts discovered across connected MCP servers."""
         if not self.available_prompts:
             print("No prompts available.")
@@ -115,7 +122,7 @@ class MCP_ChatBot:
                 required = " (required)" if arg.required else ""
                 print(f"    - {arg.name}{required}: {arg.description or ''}")
 
-    async def execute_prompt(self, prompt_name, args):
+    async def execute_prompt(self, prompt_name: str, args: dict[str, Any] ):
         """Render an MCP prompt and run the result through the agent."""
         prompt = self.available_prompts.get(prompt_name)
         if not prompt:
@@ -175,7 +182,7 @@ class MCP_ChatBot:
                         await self.list_prompts()
                     elif command == '/prompt':
                         if len(parts) < 2:
-                            print("Usage: /prompt <name> [key=value ...]")
+                            print("Usage: /prompt <name> <key>=<value> ...")
                         else:
                             prompt_name = parts[1]
                             args = dict(
