@@ -10,7 +10,7 @@ from mcp.server.fastmcp import FastMCP
 PAPER_DIR = "papers"
 
 # Initialize FastMCP server
-mcp = FastMCP("research", port=8080)
+mcp = FastMCP("research", host="0.0.0.0", port=8080)
 
 
 class PaperInfo(BaseModel):

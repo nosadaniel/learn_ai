@@ -1,7 +1,14 @@
 services:
   research-mcp:
+    container_name: research-mcp
     build:
       context: .
       dockerfile: Dockerfile
     ports:
       - "8080:8080"
+    volumes:
+      # Persist paper data on the host machine
+      - ./papers:/app/papers
+      # Mount server file for quick iteration
+      - ./research_server.py:/app/research_server.py
+    restart: unless-stopped
