@@ -6,9 +6,9 @@ A comprehensive collection of practical projects exploring **Artificial Intellig
 
 ## 📚 Repository Overview
 
-| Module / Project | Description | Live Demo / Endpoint | Key Technologies |
-| :--- | :--- | :--- | :--- |
-| **[`learn_mcp/`](./learn_mcp)** | Research assistant chatbot combining **FastMCP** server with LangChain to search and analyze arXiv scientific papers in real-time. | [`render.com/mcp`](https://research-mcp-sha-a64029e.onrender.com/mcp) | Model Context Protocol (MCP), LangChain, FastMCP, arXiv API, `uv` |
+| Module / Project | Description | Key Technologies |
+| :--- | :--- | :--- |
+| **[`learn_mcp/`](./learn_mcp)** | Research assistant chatbot combining **FastMCP** server with LangChain to search and analyze arXiv scientific papers in real-time. | Model Context Protocol (MCP), LangChain, FastMCP, arXiv API, `uv` |
 
 ---
 ## CI/CD flow
