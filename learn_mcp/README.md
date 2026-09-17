@@ -115,10 +115,49 @@ LLM_MODEL=llama3.1
 
 ---
 
+## 🌐 Live Deployed Server
+
+A live production instance of the Research MCP Server is hosted and publicly accessible:
+* **Endpoint URL**: [`https://research-mcp-sha-a64029e.onrender.com/mcp`](https://research-mcp-sha-a64029e.onrender.com/mcp)
+* **Transport**: Streamable HTTP / HTTP POST
+
+You can connect to this live server immediately using the MCP Inspector or the Chatbot client without hosting the server locally.
+
+---
+
 ## 💻 Usage
 
-### 1. Start the FastMCP Research Server
-Run locally with `uv`:
+### Option A: Test with the Live Deployed Server (No Local Setup Required)
+
+#### 1. Test via MCP Inspector Web UI
+1. Launch the inspector:
+   ```bash
+   npx @modelcontextprotocol/inspector
+   ```
+2. In the Inspector UI:
+   - **Transport Type**: Select `Streamable HTTP` (or `HTTP`)
+   - **URL**: `https://research-mcp-sha-a64029e.onrender.com/mcp`
+   - Click **Connect** to immediately query tools, test schemas, and inspect resources live.
+
+#### 2. Connect the Chatbot to the Live Server
+Update [`server_config.json`](file:///Users/nosakharedanielahanor/Developer/private_project/learn_ai/learn_mcp/server_config.json) to point to the live URL:
+```json
+"research": {
+    "url": "https://research-mcp-sha-a64029e.onrender.com/mcp",
+    "transport": "http"
+}
+```
+Then launch the chatbot:
+```bash
+uv run src/mcp_chatbot.py
+```
+
+---
+
+### Option B: Run the Server Locally
+
+#### 1. Start the Local FastMCP Research Server
+Run directly with `uv`:
 ```bash
 uv run src/research_server.py
 ```
@@ -127,17 +166,69 @@ uv run src/research_server.py
 docker compose -f docker/docker-compose.yml up -d
 ```
 
-### 2. Run the Interactive Chatbot
-In another terminal, start the chatbot (it connects to the running server via `http://localhost:8080/mcp`):
+#### 2. Connect the Chatbot to Local Server
+Ensure [`server_config.json`](file:///Users/nosakharedanielahanor/Developer/private_project/learn_ai/learn_mcp/server_config.json) points to localhost:
+```json
+"research": {
+    "url": "http://localhost:8080/mcp",
+    "transport": "http"
+}
+```
+Run the chatbot:
 ```bash
 uv run src/mcp_chatbot.py
 ```
 
-### 3. Test with MCP Inspector
-Visually test tools, schemas, prompts, and resources in your browser:
+#### 3. Test Local Server with MCP Inspector
 ```bash
 npx @modelcontextprotocol/inspector
 ```
+Connect to `http://localhost:8080/mcp` in the Inspector UI.
+
+---
+
+## 🔌 Connecting to Claude, Cursor & Other AI Clients
+
+You can connect the live research MCP server to any MCP-compliant AI assistant or IDE:
+
+### 1. Anthropic Claude Desktop
+The easiest way to configure Claude Desktop:
+1. In Claude Desktop, go to **Settings > Developer**.
+2. Click the **Edit Config** button to open `claude_desktop_config.json`.
+3. Add the live server entry (using `mcp-remote` as a bridge):
+
+```json
+{
+  "mcpServers": {
+    "research-mcp": {
+      "command": "npx",
+      "args": [
+        "-y",
+        "mcp-remote",
+        "https://research-mcp-sha-a64029e.onrender.com/mcp"
+      ]
+    }
+  }
+}
+```
+> **Note:** Restart Claude Desktop after saving. You will see a 🔨 tools icon with `search_papers` and `extract_info` ready to query scientific research papers!
+
+### 2. Cursor / Windsurf / VS Code (Cline & Roo Code)
+In your IDE's MCP Settings (or `.cursor/mcp.json`):
+```json
+{
+  "mcpServers": {
+    "research-mcp": {
+      "url": "https://research-mcp-sha-a64029e.onrender.com/mcp"
+    }
+  }
+}
+```
+
+### 3. ChatGPT & Web UIs (LibreChat, OpenWebUI, Dify)
+In any MCP-compatible web client or gateway, register the remote server:
+* **Server Type**: `Streamable HTTP` / `HTTP`
+* **URL**: `https://research-mcp-sha-a64029e.onrender.com/mcp`
 
 
 ---

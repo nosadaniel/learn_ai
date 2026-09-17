@@ -6,18 +6,12 @@ A comprehensive collection of practical projects exploring **Artificial Intellig
 
 ## 📚 Repository Overview
 
-| Module / Project | Description | Key Technologies |
-| :--- | :--- | :--- |
-| **[`learn_mcp/`](./learn_mcp)** | Research assistant chatbot combining **FastMCP** server with Langchain to search and analyze arXiv scientific papers in real-time. | Model Context Protocol (MCP), Langchain, FastMCP, arXiv API, `uv` |
+| Module / Project | Description | Live Demo / Endpoint | Key Technologies |
+| :--- | :--- | :--- | :--- |
+| **[`learn_mcp/`](./learn_mcp)** | Research assistant chatbot combining **FastMCP** server with LangChain to search and analyze arXiv scientific papers in real-time. | [`render.com/mcp`](https://research-mcp-sha-a64029e.onrender.com/mcp) | Model Context Protocol (MCP), LangChain, FastMCP, arXiv API, `uv` |
 
 ---
-
-## 🚀 Getting Started
-
-To explore the projects, navigate to any specific project directory and follow its dedicated `README.md`.
----
-
-# CI/CD flow
+## CI/CD flow
 ```mermaid
 flowchart TD
     A["Push / PR / Tag / Manual Dispatch"] --> B["main.yml (Orchestrator)"]

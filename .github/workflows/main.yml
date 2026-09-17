@@ -11,10 +11,16 @@ on:
       - main
   workflow_dispatch: # Allows manual trigger from GitHub Actions UI
 
+permissions:
+  contents: read
+  packages: write
+
 jobs:
   changes:
     name: Detect Changed Projects
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
     outputs:
       learn_mcp: ${{ steps.filter.outputs.learn_mcp }}
     steps:
@@ -38,5 +44,8 @@ jobs:
       needs.changes.outputs.learn_mcp == 'true' ||
       startsWith(github.ref, 'refs/tags/v') ||
       github.event_name == 'workflow_dispatch'
+    permissions:
+      contents: read
+      packages: write
     uses: ./.github/workflows/build-push-research-mcp.yml
     secrets: inherit
