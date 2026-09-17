@@ -22,10 +22,11 @@ FROM python:3.12-slim AS runner
 WORKDIR /app
 
 # 1. Prevent .pyc files & enable immediate stdout/stderr logging
-# 2. Add the virtual environment to PATH so 'python' uses /app/.venv
+# 2. Add the virtual environment and src directory to PATH / PYTHONPATH
 ENV PYTHONDONTWRITEBYTECODE=1 \
     PYTHONUNBUFFERED=1 \
     PATH="/app/.venv/bin:$PATH" \
+    PYTHONPATH="/app/src:$PYTHONPATH" \
     PORT=8080
 
 # Create a dedicated non-root user and group
@@ -35,7 +36,7 @@ RUN groupadd -r appgroup && useradd -r -g appgroup -u 10001 appuser
 COPY --from=builder --chown=appuser:appgroup /app/.venv /app/.venv
 
 # Copy application source code
-COPY --chown=appuser:appgroup research_server.py .
+COPY --chown=appuser:appgroup src/ ./src/
 
 # Create the papers directory for data persistence and assign ownership
 RUN mkdir -p /app/papers && chown -R appuser:appgroup /app
@@ -46,4 +47,4 @@ USER appuser
 EXPOSE 8080
 
 # Start server directly using python from the venv
-ENTRYPOINT ["python", "research_server.py"]
+ENTRYPOINT ["python", "src/research_server.py"]

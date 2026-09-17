@@ -1,0 +1,42 @@
+name: CI/CD Orchestrator
+
+on:
+  push:
+    branches:
+      - main
+    tags:
+      - 'v*.*.*'
+  pull_request:
+    branches:
+      - main
+  workflow_dispatch: # Allows manual trigger from GitHub Actions UI
+
+jobs:
+  changes:
+    name: Detect Changed Projects
+    runs-on: ubuntu-latest
+    outputs:
+      learn_mcp: ${{ steps.filter.outputs.learn_mcp }}
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Check for path changes
+        uses: dorny/paths-filter@v3
+        id: filter
+        with:
+          filters: |
+            learn_mcp:
+              - 'learn_mcp/**'
+              - '.github/workflows/build-push-research-mcp.yml'
+
+  # Trigger Research MCP build if files changed, or if running on a tag / manual dispatch
+  build-research-mcp:
+    name: Research MCP Server
+    needs: changes
+    if: |
+      needs.changes.outputs.learn_mcp == 'true' ||
+      startsWith(github.ref, 'refs/tags/v') ||
+      github.event_name == 'workflow_dispatch'
+    uses: ./.github/workflows/build-push-research-mcp.yml
+    secrets: inherit

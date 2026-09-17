@@ -8,11 +8,15 @@ from mcp.types import PromptArgument
 from pydantic import BaseModel
 import asyncio
 import json
+from pathlib import Path
+from typing import Any
 
-from llm_provider import get_model_id
+try:
+    from .llm_provider import get_model_id
+except ImportError:
+    from llm_provider import get_model_id
 
 from langgraph.graph.state import CompiledStateGraph
-from typing import Any
 
 
 load_dotenv()
@@ -45,7 +49,11 @@ class MCP_ChatBot:
     async def connect_to_servers(self)->None:
         """Connect to all MCP servers defined in the configuration and build the agent."""
         try:
-            with open('server_config.json', 'r') as f:
+            config_path = Path(__file__).resolve().parent.parent / 'server_config.json'
+            if not config_path.exists():
+                config_path = Path('server_config.json')
+
+            with open(config_path, 'r') as f:
                 data = json.load(f)
 
             servers = data.get('mcpServers', {})

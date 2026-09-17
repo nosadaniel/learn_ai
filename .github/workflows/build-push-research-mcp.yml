@@ -1,15 +1,7 @@
 name: Build and Push Research MCP Docker Image to GHCR
 
 on:
-  push:
-    branches:
-      - main
-    paths:
-      - 'learn_mcp/**'
-      - '.github/workflows/build-push-research-mcp.yml'
-    tags:
-      - 'v*.*.*'
-      
+  workflow_call: # Allows main.yml to trigger this workflow
   workflow_dispatch: # Allows manual trigger from GitHub Actions UI
 
 env:
@@ -57,7 +49,7 @@ jobs:
         uses: docker/build-push-action@v6
         with:
           context: ./learn_mcp
-          file: ./learn_mcp/Dockerfile.prod
+          file: ./learn_mcp/docker/Dockerfile.prod
           platforms: linux/amd64,linux/arm64
           push: ${{ github.event_name != 'pull_request' }}
           tags: ${{ steps.meta.outputs.tags }}

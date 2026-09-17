@@ -13,12 +13,8 @@
             "transport": "stdio"
         },
         "research": {
-            "command": "uv",
-            "args": [
-                "run",
-                "research_server.py"
-            ],
-            "transport": "stdio"
+            "url": "http://localhost:8080/mcp",
+            "transport": "http"
         },
         "fetch": {
             "command": "uvx",
