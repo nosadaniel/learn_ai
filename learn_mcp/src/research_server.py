@@ -202,40 +202,6 @@ def generate_search_prompt(topic: str, num_papers: int = 5) -> str:
     
     Please present both detailed information about each paper and a high-level synthesis of the research landscape in {topic}."""
 
-## helper methods
-def _get_filename_from_url(url: str) -> str:
-    """Get the filename from the url."""
-    if url.startswith("https://"):
-        url = url.replace("https://", "", 1)
-    elif url.startswith("http://"):
-        url = url.replace("http://", "", 1)
-
-    if url.startswith("www."):
-        url = url.replace("www.", "", 1)
-
-    first_phase = url.split(".")[0]
-
-    return f"{first_phase}_summary.md "
-
-
-@mcp.prompt()
-def generate_fetch_summary_store_file_prompt(url: str) -> str:
-    """Generate a prompt for Claude to fetch content, summarize it and store it in a file."""
-    return f"""You are a precise automation assistant. You must use your natively available tools to download, summarize, and save webpage content.
-
-    URL to process: {url}
-    Target Filename: {_get_filename_from_url(url)}
-
-    Instructions:
-    1. Call the fetch tool to extract the raw page content from the URL.
-    2. Draft a structured markdown summary of that content (including an overview, core concepts, and key highlights using headings and bullet points).
-    3. Call your filesystem file-writing tool to save the drafted summary. Pass the entire summary string directly into the tool's text/content argument, and use '{_get_filename_from_url(url)}' as the file path.
-
-    CRITICAL TOOL RULES:
-    - Do NOT output a bash block (like ```bash echo...```) or write code to simulate saving the file. 
-    - You must physically execute the file-writing tool call. 
-    - The text content inside the file must contain ONLY your drafted markdown summary—no conversational intros, outros, or explanations.
-    """
 if __name__ == "__main__":
     mcp.run(transport='streamable-http')
 
